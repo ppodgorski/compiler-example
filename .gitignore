@@ -1,0 +1,5 @@
+test.ll
+*.class
+output/
+a.out
+.idea/
