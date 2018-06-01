@@ -2,14 +2,20 @@ import java.util.HashMap;
 
 public class LLVMActions extends NarwhalBaseListener {
 
-    HashMap<String, String> memory = new HashMap<String, String>();
-    String value;
+    private HashMap<String, String> variables = new HashMap<>();
+
+    private String value;
 
     @Override
     public void exitAssign(NarwhalParser.AssignContext ctx) {
-        String tmp = ctx.STRING().getText();
-        tmp = tmp.substring(1, tmp.length() - 1);
-        memory.put(ctx.ID().getText(), tmp);
+        if (ctx.value().STRING() != null) {
+            String tmp = ctx.value().STRING().getText();
+            tmp = tmp.substring(1, tmp.length() - 1);
+            variables.put(ctx.ID().getText(), tmp);
+        } else if (ctx.value().INT() != null) {
+            String tmp = ctx.value().INT().getText();
+            variables.put(ctx.ID().getText(), tmp);
+        }
     }
 
     @Override
@@ -20,11 +26,14 @@ public class LLVMActions extends NarwhalBaseListener {
     @Override
     public void exitValue(NarwhalParser.ValueContext ctx) {
         if (ctx.ID() != null) {
-            value = memory.get(ctx.ID().getText());
+            value = variables.get(ctx.ID().getText());
         }
         if (ctx.STRING() != null) {
             String tmp = ctx.STRING().getText();
             value = tmp.substring(1, tmp.length() - 1);
+        }
+        if (ctx.INT() != null) {
+            value = ctx.INT().getText();
         }
     }
 

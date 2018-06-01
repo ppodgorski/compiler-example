@@ -1,5 +1,5 @@
 print "whale"
 x = "Narwhal"
-y = "abc"
-print x
+y = 9
+print y
 print "end"
