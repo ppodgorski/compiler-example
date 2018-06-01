@@ -1,8 +1,3 @@
-print "whale"
-x = "Narwhal"
-y = 5
-z = 4.3
-print x
-print y
+z = 4
+z = 2
 print z
-print 42

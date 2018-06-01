@@ -3,7 +3,7 @@ grammar Narwhal;
 prog: ( stat? NEWLINE )*
     ;
 
-stat: PRINT value       #print
+stat: PRINT value           #print
        | ID '=' value       #assign
     ;
 
