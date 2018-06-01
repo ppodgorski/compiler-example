@@ -1,5 +1,8 @@
 print "whale"
 x = "Narwhal"
-y = 9
+y = 5
+z = 4.3
+print x
 print y
-print "end"
+print z
+print 42

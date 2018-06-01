@@ -15,6 +15,9 @@ public class LLVMActions extends NarwhalBaseListener {
         } else if (ctx.value().INT() != null) {
             String tmp = ctx.value().INT().getText();
             variables.put(ctx.ID().getText(), tmp);
+        } else if (ctx.value().REAL() != null) {
+            String tmp = ctx.value().REAL().getText();
+            variables.put(ctx.ID().getText(), tmp);
         }
     }
 
@@ -27,14 +30,13 @@ public class LLVMActions extends NarwhalBaseListener {
     public void exitValue(NarwhalParser.ValueContext ctx) {
         if (ctx.ID() != null) {
             value = variables.get(ctx.ID().getText());
-        }
-        if (ctx.STRING() != null) {
+        } else if (ctx.STRING() != null) {
             String tmp = ctx.STRING().getText();
             value = tmp.substring(1, tmp.length() - 1);
+        } else {
+            value = ctx.getText();
         }
-        if (ctx.INT() != null) {
-            value = ctx.INT().getText();
-        }
+
     }
 
     @Override
