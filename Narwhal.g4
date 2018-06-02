@@ -5,12 +5,16 @@ prog: ( stat? NEWLINE )*
 
 stat: PRINT value           #print
        | ID '=' value       #assign
+       | READINT ID         #readInt
     ;
 
 value: ID
        | STRING
        | INT
        | REAL
+    ;
+
+READINT: 'readInt'
     ;
 
 PRINT: 'print'
