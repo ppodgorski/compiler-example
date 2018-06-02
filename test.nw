@@ -1,2 +1,4 @@
-readInt x
+x = 34.2
+print x
+readReal x
 print x

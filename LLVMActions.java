@@ -54,6 +54,18 @@ public class LLVMActions extends NarwhalBaseListener {
     }
 
     @Override
+    public void exitReadReal(NarwhalParser.ReadRealContext ctx) {
+        String ID = ctx.ID().getText();
+        if (!variables.containsKey(ID)) {
+            LLVMGenerator.declare_double(ID);
+            LLVMGenerator.scanf_double(ID);
+            variables.put(ID, new Value(ID, VarType.REAL));
+        } else {
+            LLVMGenerator.scanf_double(ID);
+        }
+    }
+
+    @Override
     public void exitProg(NarwhalParser.ProgContext ctx) {
         System.out.println(LLVMGenerator.generate());
     }
