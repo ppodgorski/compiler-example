@@ -1,10 +1,14 @@
-func test() {
-  print "test"
-}
-
 func testt() {
-  print "test2"
+
+
+
+  r = 3.3
+  return r
 }
 
-x = "whale"
-print x
+ readInt v
+  print v
+
+print tfvamv
+
+testt()

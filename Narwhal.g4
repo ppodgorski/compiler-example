@@ -10,6 +10,7 @@ stat: PRINT value           #print
        | ID '=' value       #assign
        | READINT ID         #readInt
        | READREAL ID        #readReal
+       | ID '()'            #call
     ;
 
 value: ID
@@ -18,7 +19,13 @@ value: ID
        | REAL
     ;
 
-function: FUNCTION ID '()' '{' block '}'
+r_return: RETURN ID NEWLINE
+    ;
+
+function: FUNCTION ID '()' '{' block r_return '}'
+    ;
+
+RETURN: 'return'
     ;
 
 FUNCTION: 'func'
