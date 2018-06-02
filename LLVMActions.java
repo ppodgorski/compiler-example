@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Stack;
 
 public class LLVMActions extends NarwhalBaseListener {
@@ -16,7 +17,20 @@ public class LLVMActions extends NarwhalBaseListener {
     }
 
     private HashMap<String, Value> variables = new HashMap<>();
+    private boolean global = true;
 
+    @Override
+    public void enterFunction(NarwhalParser.FunctionContext ctx) {
+        global = false;
+        String ID = ctx.ID().getText();
+        LLVMGenerator.function_start(ID);
+    }
+
+    @Override
+    public void exitFunction(NarwhalParser.FunctionContext ctx) {
+        global = true;
+        LLVMGenerator.function_end();
+    }
 
     @Override
     public void exitAssign(NarwhalParser.AssignContext ctx) {

@@ -1,6 +1,9 @@
 grammar Narwhal;
 
-prog: ( stat? NEWLINE )*
+prog: ( (stat | function)? (NEWLINE) )*
+    ;
+
+block: ( stat? NEWLINE )*
     ;
 
 stat: PRINT value           #print
@@ -13,6 +16,12 @@ value: ID
        | STRING
        | INT
        | REAL
+    ;
+
+function: FUNCTION ID '()' '{' block '}'
+    ;
+
+FUNCTION: 'func'
     ;
 
 READREAL: 'readReal'

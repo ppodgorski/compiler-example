@@ -1,4 +1,10 @@
-x = 34.2
-print x
-readReal x
+func test() {
+  print "test"
+}
+
+func testt() {
+  print "test2"
+}
+
+x = "whale"
 print x
