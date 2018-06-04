@@ -1,12 +1,12 @@
 import java.util.HashSet;
 
 class LLVMGenerator {
+    static int reg = 1;
 
     private static String header_text = "";
     private static String main_text = "";
     private static String buffer = "";
     private static int str_i = 0;
-    private static int reg = 1;
     private static int main_reg = 1;
 
     static String generate() {
@@ -29,6 +29,7 @@ class LLVMGenerator {
         return text;
     }
 
+    // functions
     static void function_start(String id) {
         main_text += buffer;
         main_reg = reg;
@@ -59,6 +60,7 @@ class LLVMGenerator {
         reg++;
     }
 
+    // printf
     static void print(String text) {
         int str_len = text.length();
         String str_type = "[" + (str_len + 2) + " x i8]";
@@ -101,6 +103,7 @@ class LLVMGenerator {
         reg++;
     }
 
+    // scanf
     static void scanf_i32(String id, HashSet<String> globalNames) {
         assign_i32(id, "0", globalNames);
         if (globalNames.contains(id)) {
@@ -121,6 +124,7 @@ class LLVMGenerator {
         reg++;
     }
 
+    // declare
     static void declare_i32(String id, boolean global) {
         if (global) {
             header_text += "@" + id + " = global i32 0\n";
@@ -137,6 +141,7 @@ class LLVMGenerator {
         }
     }
 
+    // assign
     static void assign_i32(String id, String value, HashSet<String> globalNames) {
         if (globalNames.contains(id)) {
             buffer += "store i32 " + value + ", i32* @" + id + "\n";
@@ -163,6 +168,77 @@ class LLVMGenerator {
         }
     }
 
+    // add
+    static void add_i32(String val1, String val2) {
+        buffer += "%" + reg + " = add i32 " + val1 + ", " + val2 + "\n";
+        reg++;
+    }
+
+    static void add_double(String val1, String val2) {
+        buffer += "%" + reg + " = fadd double " + val1 + ", " + val2 + "\n";
+        reg++;
+    }
+
+    // mul
+    static void mul_i32(String val1, String val2) {
+        buffer += "%" + reg + " = mul i32 " + val1 + ", " + val2 + "\n";
+        reg++;
+    }
+
+    static void mul_double(String val1, String val2) {
+        buffer += "%" + reg + " = fmul double " + val1 + ", " + val2 + "\n";
+        reg++;
+    }
+
+    // sub
+    static void sub_i32(String val1, String val2) {
+        buffer += "%" + reg + " = sub i32 " + val1 + ", " + val2 + "\n";
+        reg++;
+    }
+
+    static void sub_double(String val1, String val2) {
+        buffer += "%" + reg + " = fsub double " + val1 + ", " + val2 + "\n";
+        reg++;
+    }
+
+    //div
+    static void div_i32(String val1, String val2) {
+        buffer += "%" + reg + " = sdiv i32 " + val1 + ", " + val2 + "\n";
+        reg++;
+    }
+
+    static void div_double(String val1, String val2) {
+        buffer += "%" + reg + " = fdiv double " + val1 + ", " + val2 + "\n";
+        reg++;
+    }
+
+
+    // load
+    static void load_i32(String id, HashSet<String> globalNames) {
+        if (globalNames.contains(id)) {
+            buffer += "%" + reg + " = load i32, i32* @" + id + "\n";
+        } else {
+            buffer += "%" + reg + " = load i32, i32* %" + id + "\n";
+        }
+        reg++;
+    }
+
+    static void load_double(String id, HashSet<String> globalNames) {
+        if (globalNames.contains(id)) {
+            buffer += "%" + reg + " = load double, double* @" + id + "\n";
+        } else {
+            buffer += "%" + reg + " = load double, double* %" + id + "\n";
+        }
+        reg++;
+    }
+
+
+    static void sitofp(String id){
+        buffer += "%"+reg+" = sitofp i32 "+id+" to double\n";
+        reg++;
+    }
+
+    // helpers
     private static void formatBuffer() {
         String[] lines = buffer.split("\n");
         StringBuilder sb = new StringBuilder();

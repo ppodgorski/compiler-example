@@ -8,6 +8,7 @@ block: ( stat? NEWLINE )*
 
 stat: PRINT value           #print
        | ID '=' value       #assign
+       | ID '=' expression  #exprAssign
        | READINT ID         #readInt
        | READREAL ID        #readReal
        | ID '()'            #call
@@ -19,11 +20,42 @@ value: ID
        | REAL
     ;
 
+expression: term ( ( add | sub )  term )*
+    ;
+
+term: factor ( ( mul | div ) factor )*
+    ;
+
+factor: lp expression rp    #ex
+       | INT                #int
+       | REAL               #real
+       | ID                 #id
+    ;
+
+lp: '('
+    ;
+
+rp: ')'
+    ;
+
+add: '+'
+    ;
+
+sub: '-'
+    ;
+
+mul: '*'
+    ;
+
+div: '/'
+    ;
+
 r_return: RETURN ID NEWLINE
     ;
 
 function: FUNCTION ID '()' '{' block r_return '}'
     ;
+
 
 RETURN: 'return'
     ;

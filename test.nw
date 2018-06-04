@@ -1,14 +1,9 @@
-func testt() {
-
-
-
-  r = 3.3
-  return r
+func test() {
+  x = 2.2
+  return x
 }
 
- readInt v
-  print v
 
-print tfvamv
-
-testt()
+ x = 2.0
+ x = 4+x
+ print x
