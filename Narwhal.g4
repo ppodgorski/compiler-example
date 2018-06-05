@@ -51,10 +51,7 @@ mul: '*'
 div: '/'
     ;
 
-r_return: RETURN ID NEWLINE
-    ;
-
-function: FUNCTION ID '()' '{' block r_return '}'
+function: FUNCTION ID '()' '{' block '}'
     ;
 
 equal: ID '==' INT
@@ -65,9 +62,6 @@ blockif: block
 
 
 IF: 'if'
-    ;
-
-RETURN: 'return'
     ;
 
 FUNCTION: 'func'

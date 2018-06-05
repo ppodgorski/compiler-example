@@ -32,7 +32,6 @@ public class LLVMActions extends NarwhalBaseListener {
     @Override
     public void exitFunction(NarwhalParser.FunctionContext ctx) {
         global = true;
-        LLVMGenerator.load_return(ctx.r_return().ID().getText(), globalNames);
         LLVMGenerator.function_end();
         removeLocalVariables();
         localNames = new HashSet<>();

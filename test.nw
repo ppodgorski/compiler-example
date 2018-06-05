@@ -4,8 +4,7 @@ func test() {
  if x == 2 {
     print "test"
  }
-  y = 2.2
-  return y
+
 }
 
 

@@ -37,12 +37,12 @@ class LLVMGenerator {
     static void function_start(String id) {
         main_text += buffer;
         main_reg = reg;
-        buffer = "define double @" + id + "() nounwind {\n";
+        buffer = "define void @" + id + "() nounwind {\n";
         reg = 1;
     }
 
     static void function_end() {
-        buffer += "ret double %" + (reg - 1) + "\n";
+        buffer += "ret void\n";
         formatBuffer();
         buffer += "}\n\n";
         header_text += buffer;
@@ -50,18 +50,9 @@ class LLVMGenerator {
         reg = main_reg;
     }
 
-    static void load_return(String id, HashSet<String> globalNames) {
-        if (globalNames.contains(id)) {
-            buffer += "%" + reg + " = load double, double* @" + id + "\n";
-        } else {
-            buffer += "%" + reg + " = load double, double* %" + id + "\n";
-        }
-        reg++;
-    }
-
     static void call(String id) {
-        buffer += "%" + reg + " = call double @" + id + "()\n";
-        reg++;
+        buffer += "call void @" + id + "()\n";
+
     }
 
     // printf
