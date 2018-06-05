@@ -2,7 +2,7 @@ import java.util.*;
 
 class MathUtils {
 
-    static String eval(Queue<String> infix, HashSet<String> globalNames, HashMap<String, LLVMActions.Value> variables) {
+    static LLVMActions.Value eval(Queue<String> infix, HashSet<String> globalNames, HashMap<String, LLVMActions.Value> variables) {
         Queue<String> rpn = infixToRpn(intToReal(infix));
         Stack<String> stack = new Stack<>();
 
@@ -37,7 +37,30 @@ class MathUtils {
                     break;
             }
         }
-        return stack.pop();
+
+        if (allValuesAreIntegers(rpn, variables)) {
+            LLVMGenerator.fptosi(stack.pop());
+            return new LLVMActions.Value("%" + (LLVMGenerator.reg - 1), LLVMActions.VarType.INT);
+        } else {
+            return new LLVMActions.Value("%" + (LLVMGenerator.reg - 1), LLVMActions.VarType.REAL);
+        }
+
+    }
+
+    private static boolean allValuesAreIntegers (Queue<String> values, HashMap<String, LLVMActions.Value> variables) {
+        for (String item : values) {
+            if (isNumeric(item)) {
+                if (!isInteger(item)) {
+                    return false;
+                }
+            } else if (variables.containsKey(item)) {
+                if (variables.get(item).type != LLVMActions.VarType.INT) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private static void handleVariable(String item, Stack<String> stack,
@@ -117,7 +140,7 @@ class MathUtils {
         return rpn;
     }
 
-    private static boolean isNumeric(String str) {
+    static boolean isNumeric(String str) {
         try {
             double d = Double.parseDouble(str);
         } catch (NumberFormatException nfe) {

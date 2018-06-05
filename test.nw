@@ -1,11 +1,21 @@
-func test() {
+func fibonacci() {
+  print "Enter index of Fibonacci sequence:"
+  readInt n
 
- x = 2
- if x == 2 {
-    print "test"
- }
+  grandparent = 0
+  parent = 1
+  r = n - 2
+
+  repeat r {
+    n = parent + grandparent
+    grandparent = parent
+    parent = n
+    print n
+  }
+
+  print "Solution: "
+  print n
 
 }
 
-
-test()
+fibonacci()

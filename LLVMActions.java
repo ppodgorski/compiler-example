@@ -4,7 +4,7 @@ public class LLVMActions extends NarwhalBaseListener {
 
     enum VarType {STRING, INT, REAL}
 
-    class Value {
+    static class Value {
         String content;
         VarType type;
 
@@ -48,38 +48,62 @@ public class LLVMActions extends NarwhalBaseListener {
         String ID = ctx.ID().getText();
         Value value = getValue(ctx.value());
         declareVariable(ID, value);
-        assignVariable(ID, value, ctx.getStart().getLine());
+        assignVariable(ID, value, ctx.getStart().getLine(), false);
     }
 
     @Override
     public void exitExprAssign(NarwhalParser.ExprAssignContext ctx) {
         String ID = ctx.ID().getText();
-        String v = MathUtils.eval(infixExpr, globalNames, variables);
-
-        Value value = new Value(v, VarType.REAL);
+        Value value = MathUtils.eval(infixExpr, globalNames, variables);
         declareVariable(ID, value);
-        assignVariable(ID, value, ctx.getStart().getLine());
+        assignVariable(ID, value, ctx.getStart().getLine(), true);
         infixExpr = new LinkedList<>();
     }
 
-    @Override public void exitInt(NarwhalParser.IntContext ctx) { infixExpr.add(ctx.getText()); }
+    @Override
+    public void exitInt(NarwhalParser.IntContext ctx) {
+        infixExpr.add(ctx.getText());
+    }
 
-    @Override public void exitReal(NarwhalParser.RealContext ctx) { infixExpr.add(ctx.getText()); }
+    @Override
+    public void exitReal(NarwhalParser.RealContext ctx) {
+        infixExpr.add(ctx.getText());
+    }
 
-    @Override public void exitId(NarwhalParser.IdContext ctx) { infixExpr.add(ctx.getText()); }
+    @Override
+    public void exitId(NarwhalParser.IdContext ctx) {
+        infixExpr.add(ctx.getText());
+    }
 
-    @Override public void exitLp(NarwhalParser.LpContext ctx) { infixExpr.add(ctx.getText()); }
+    @Override
+    public void exitLp(NarwhalParser.LpContext ctx) {
+        infixExpr.add(ctx.getText());
+    }
 
-    @Override public void exitRp(NarwhalParser.RpContext ctx) { infixExpr.add(ctx.getText()); }
+    @Override
+    public void exitRp(NarwhalParser.RpContext ctx) {
+        infixExpr.add(ctx.getText());
+    }
 
-    @Override public void exitAdd(NarwhalParser.AddContext ctx) { infixExpr.add(ctx.getText()); }
+    @Override
+    public void exitAdd(NarwhalParser.AddContext ctx) {
+        infixExpr.add(ctx.getText());
+    }
 
-    @Override public void exitSub(NarwhalParser.SubContext ctx) { infixExpr.add(ctx.getText()); }
+    @Override
+    public void exitSub(NarwhalParser.SubContext ctx) {
+        infixExpr.add(ctx.getText());
+    }
 
-    @Override public void exitMul(NarwhalParser.MulContext ctx) { infixExpr.add(ctx.getText()); }
+    @Override
+    public void exitMul(NarwhalParser.MulContext ctx) {
+        infixExpr.add(ctx.getText());
+    }
 
-    @Override public void exitDiv(NarwhalParser.DivContext ctx) { infixExpr.add(ctx.getText()); }
-
+    @Override
+    public void exitDiv(NarwhalParser.DivContext ctx) {
+        infixExpr.add(ctx.getText());
+    }
 
 
     @Override
@@ -129,7 +153,7 @@ public class LLVMActions extends NarwhalBaseListener {
     }
 
     @Override
-    public void exitBlockif (NarwhalParser.BlockifContext ctx) {
+    public void exitBlockif(NarwhalParser.BlockifContext ctx) {
         LLVMGenerator.if_end();
     }
 
@@ -141,6 +165,29 @@ public class LLVMActions extends NarwhalBaseListener {
             LLVMGenerator.icmp(ID, INT, globalNames);
         } else {
             error(ctx.getStart().getLine(), "Unknown variable: " + ID);
+        }
+    }
+
+    @Override
+    public void exitRepetitions(NarwhalParser.RepetitionsContext ctx) {
+        String ID = ctx.ID().getText();
+        if (variables.containsKey(ID)) {
+            if (variables.get(ID).type == VarType.INT) {
+                LLVMGenerator.repeat_start(ID, globalNames, false);
+            } else if (variables.get(ID).type == VarType.REAL) {
+                LLVMGenerator.repeat_start(ID, globalNames, true);
+            } else {
+                error(ctx.getStart().getLine(), "Repeat value must be an integer or real.");
+            }
+        } else {
+            error(ctx.getStart().getLine(), "Unknown variable: " + ID);
+        }
+    }
+
+    @Override
+    public void exitBlock(NarwhalParser.BlockContext ctx) {
+        if (ctx.getParent() instanceof NarwhalParser.RepeatContext) {
+            LLVMGenerator.repeat_end();
         }
     }
 
@@ -180,7 +227,7 @@ public class LLVMActions extends NarwhalBaseListener {
         }
     }
 
-    private void assignVariable(String ID, Value value, int line) {
+    private void assignVariable(String ID, Value value, int line, boolean isMathExpr) {
         if (global) {
             globalNames.add(ID);
         } else if (!globalNames.contains(ID)) {
@@ -188,13 +235,29 @@ public class LLVMActions extends NarwhalBaseListener {
         }
 
         if (value.type == VarType.INT) {
-            LLVMGenerator.assign_i32(ID, value.content, globalNames);
+            LLVMGenerator.assign_i32(ID, getValue(value, isMathExpr), globalNames);
         } else if (value.type == VarType.REAL) {
-            LLVMGenerator.assign_double(ID, value.content, globalNames);
+            LLVMGenerator.assign_double(ID, getValue(value, isMathExpr), globalNames);
         } else if (value.type == VarType.STRING) {
             assignString(ID, value, line);
         } else {
             error(line, "Assign error: " + ID);
+        }
+    }
+
+    private String getValue(Value value, boolean isMathExpr) {
+        if (isMathExpr) {
+            return value.content;
+        }
+        if (MathUtils.isNumeric(value.content)) {
+            return value.content;
+        } else {
+            if (value.type == VarType.REAL) {
+                LLVMGenerator.load_double(value.content, globalNames);
+            } else {
+                LLVMGenerator.load_i32(value.content, globalNames);
+            }
+            return "%" + (LLVMGenerator.reg - 1);
         }
     }
 

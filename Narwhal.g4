@@ -6,13 +6,14 @@ prog: ( (stat | function)? (NEWLINE) )*
 block: ( stat? NEWLINE )*
     ;
 
-stat: PRINT value                       #print
-       | ID '=' value                   #assign
-       | ID '=' expression              #exprAssign
-       | READINT ID                     #readInt
-       | READREAL ID                    #readReal
-       | ID '()'                        #call
-       | IF equal '{' blockif '}' 		#if
+stat: PRINT value                               #print
+       | ID '=' value                           #assign
+       | ID '=' expression                      #exprAssign
+       | READINT ID                             #readInt
+       | READREAL ID                            #readReal
+       | ID '()'                                #call
+       | IF equal '{' blockif '}' 		        #if
+       | REPEAT repetitions '{' block '}'		#repeat
     ;
 
 value: ID
@@ -60,6 +61,12 @@ equal: ID '==' INT
 blockif: block
     ;
 
+repetitions: ID
+    ;
+
+
+REPEAT: 'repeat'
+	;
 
 IF: 'if'
     ;
