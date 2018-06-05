@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.Stack;
 
 class LLVMGenerator {
     static int reg = 1;
@@ -8,6 +9,9 @@ class LLVMGenerator {
     private static String buffer = "";
     private static int str_i = 0;
     private static int main_reg = 1;
+    private static int br = 0;
+
+    static Stack<Integer> br_stack = new Stack<>();
 
     static String generate() {
         main_text += buffer;
@@ -233,8 +237,29 @@ class LLVMGenerator {
     }
 
 
-    static void sitofp(String id){
-        buffer += "%"+reg+" = sitofp i32 "+id+" to double\n";
+    // if
+    static void icmp(String id, String value, HashSet<String> globalNames) {
+        load_i32(id, globalNames);
+        buffer += "%" + reg + " = icmp eq i32 %" + (reg - 1) + ", " + value + "\n";
+        reg++;
+    }
+
+    static void if_start() {
+        br++;
+        buffer += "br i1 %" + (reg - 1) + ", label %true" + br + ", label %false" + br + "\n";
+        buffer += "true" + br + ":\n";
+        br_stack.push(br);
+    }
+
+    static void if_end() {
+        int b = br_stack.pop();
+        buffer += "br label %false" + b + "\n";
+        buffer += "false" + b + ":\n";
+    }
+
+
+    static void sitofp(String id) {
+        buffer += "%" + reg + " = sitofp i32 " + id + " to double\n";
         reg++;
     }
 

@@ -123,6 +123,28 @@ public class LLVMActions extends NarwhalBaseListener {
         }
     }
 
+
+    @Override
+    public void enterBlockif(NarwhalParser.BlockifContext ctx) {
+        LLVMGenerator.if_start();
+    }
+
+    @Override
+    public void exitBlockif (NarwhalParser.BlockifContext ctx) {
+        LLVMGenerator.if_end();
+    }
+
+    @Override
+    public void exitEqual(NarwhalParser.EqualContext ctx) {
+        String ID = ctx.ID().getText();
+        String INT = ctx.INT().getText();
+        if (variables.containsKey(ID)) {
+            LLVMGenerator.icmp(ID, INT, globalNames);
+        } else {
+            error(ctx.getStart().getLine(), "Unknown variable: " + ID);
+        }
+    }
+
     @Override
     public void exitProg(NarwhalParser.ProgContext ctx) {
         System.out.println(LLVMGenerator.generate());

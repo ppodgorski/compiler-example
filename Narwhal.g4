@@ -6,12 +6,13 @@ prog: ( (stat | function)? (NEWLINE) )*
 block: ( stat? NEWLINE )*
     ;
 
-stat: PRINT value           #print
-       | ID '=' value       #assign
-       | ID '=' expression  #exprAssign
-       | READINT ID         #readInt
-       | READREAL ID        #readReal
-       | ID '()'            #call
+stat: PRINT value                       #print
+       | ID '=' value                   #assign
+       | ID '=' expression              #exprAssign
+       | READINT ID                     #readInt
+       | READREAL ID                    #readReal
+       | ID '()'                        #call
+       | IF equal '{' blockif '}' 		#if
     ;
 
 value: ID
@@ -56,6 +57,15 @@ r_return: RETURN ID NEWLINE
 function: FUNCTION ID '()' '{' block r_return '}'
     ;
 
+equal: ID '==' INT
+    ;
+
+blockif: block
+    ;
+
+
+IF: 'if'
+    ;
 
 RETURN: 'return'
     ;

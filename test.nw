@@ -1,9 +1,12 @@
 func test() {
-  x = 2.2
-  return x
+
+ x = 2
+ if x == 2 {
+    print "test"
+ }
+  y = 2.2
+  return y
 }
 
 
- x = 2.0
- x = 4+x
- print x
+test()
