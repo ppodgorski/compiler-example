@@ -1,21 +1,34 @@
 func fibonacci() {
   print "Enter index of Fibonacci sequence:"
   readInt n
+  solution = n
 
-  grandparent = 0
-  parent = 1
-  r = n - 2
-
-  repeat r {
-    n = parent + grandparent
-    grandparent = parent
-    parent = n
-    print n
+  if n == 2 {
+    solution = 1
   }
 
-  print "Solution: "
-  print n
+  grandparent = 1
+  parent = 1
+  r = solution - 2
 
+  repeat r {
+    solution = parent + grandparent
+    grandparent = parent
+    parent = solution
+  }
+
+  print "Solution:"
+  print solution
+}
+
+func arithmetic() {
+  print "Enter x to solve x^2 + 2*x + 10 equation:"
+  readInt x
+  s = x*x + 2*x + 10
+  print "Solution:"
+  print s
 }
 
 fibonacci()
+arithmetic()
+

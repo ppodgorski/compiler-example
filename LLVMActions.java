@@ -209,7 +209,7 @@ public class LLVMActions extends NarwhalBaseListener {
                 error(ctx.getStart().getLine(), "Invalid value.");
                 return null;
             } else {
-                return new Value(declaredValue.content, declaredValue.type);
+                return new Value(ctx.ID().getText(), declaredValue.type);
             }
         }
     }
